@@ -12,6 +12,7 @@ type ButtonProps = ComponentProps<'button'> & {
 
 function Button({
   variant = 'primary',
+  className,
   children,
   icon: Icon,
   ...props
@@ -19,12 +20,13 @@ function Button({
   return (
     <button
       className={cn(
+        className,
         'flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer',
         variant === 'primary' &&
-          'w-[352px] h-[48px] rounded-lg bg-blue-base text-white',
+          'w-[316px] h-[48px] rounded-lg bg-blue-base text-white',
         variant === 'primary' && '[&:not(:disabled)]:hover:bg-blue-dark',
         variant === 'secondary' &&
-          'w-[70px] h-[32px] rounded-sm bg-gray-200 text-gray-500',
+          'w-[100px] h-[32px] rounded-sm bg-gray-200 text-gray-500',
         variant === 'secondary' &&
           '[&:not(:disabled)]:hover:border [&:not(:disabled)]:hover:border-blue-base'
       )}
@@ -36,8 +38,16 @@ function Button({
   )
 }
 
-function Title({ children }: { children: React.ReactNode }) {
-  return <span>{children}</span>
+type TitleProps = ComponentProps<'span'> & {
+  children: React.ReactNode
+}
+
+function Title({ children, className, ...props }: TitleProps) {
+  return (
+    <span className={className} {...props}>
+      {children}
+    </span>
+  )
 }
 
 function Icon({

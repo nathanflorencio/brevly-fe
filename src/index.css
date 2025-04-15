@@ -14,5 +14,44 @@
   --color-white: #FFFFFF;
   --color-danger: #B12C4D;
 
-  --font-sans: 'Open Sans', sans-serif;
+  --font-sans: "Open Sans", sans-serif;
+}
+
+@layer utilities {
+  .text-xl {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 700;
+  }
+
+  .text-lg {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+  }
+
+  .text-md {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+  }
+
+  .text-sm {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+  }
+
+  .text-sm-semibold {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+  }
+
+  .text-xs {
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
 }
