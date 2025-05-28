@@ -1,3 +1,9 @@
+Read `env.example` and create `.env` file with correct credentials to run this project
+
+# Running
+
+With NodeJS installed (LTS recommended) on your machine and PNPM, run `pnpm run build` and then `pnpm run preview`
+
 ## Funcionalidades e Regras
 
 Assim como na API, temos as seguintes funcionalidades e regras:

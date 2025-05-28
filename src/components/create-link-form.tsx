@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input'
+import { Input, Label } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -31,7 +31,7 @@ export function CreateLinkForm() {
     resolver: zodResolver(createLinkFormSchema),
     values: {
       originalUrl: '',
-      shortUrl: '',
+      shortUrl: 'brev.ly/',
     },
   })
 
@@ -40,22 +40,22 @@ export function CreateLinkForm() {
   }
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={() => {}}>
+    <form
+      className="flex flex-col gap-4"
+      onSubmit={form.handleSubmit(handleSubmit)}
+    >
       <div className="flex flex-col gap-2">
-        <label htmlFor="originalUrl" className="text-xs text-gray-500">
-          Link original
-        </label>
-        <Input id="originalUrl" type="text" placeholder="www.exemplo.com.br" />
-
-        <label htmlFor="shortUrl" className="text-xs text-gray-500">
-          Link encurtado
-        </label>
+        <Label htmlFor="originalUrl" title="Link original" />
         <Input
-          id="shortUrl"
-          name="shortUrl"
+          autoFocus
+          id="originalUrl"
+          name="originalUrl"
           type="text"
-          placeholder="brev.ly/"
+          placeholder="www.exemplo.com.br"
         />
+
+        <Label htmlFor="shortUrl" title="Link encurtado" />
+        <Input id="shortUrl" name="shortUrl" type="text" />
       </div>
       <Button type="submit" className="w-full mt-6" variant="primary" disabled>
         <Button.Title>Salvar link</Button.Title>

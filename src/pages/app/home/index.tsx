@@ -15,7 +15,7 @@ export function Home() {
     <div className="flex flex-col justify-center max-w-7xl mx-auto items-start h-screen w-screen">
       <Header />
       <main className="flex gap-5 w-full">
-        <div className="bg-gray-100 lg:w-[380px] w-full p-8 rounded-lg">
+        <div className="bg-gray-100 lg:w-[450px] w-full p-8 rounded-lg">
           <h1 className="text-gray-600 text-lg mb-6">Novo link</h1>
           <CreateLinkForm />
         </div>
