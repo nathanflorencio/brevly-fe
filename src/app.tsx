@@ -9,16 +9,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster
-        richColors
-        closeButton
-        visibleToasts={3}
-        toastOptions={{
-          style: {
-            fontSize: 16,
-          },
-        }}
-      />
+      <Toaster richColors visibleToasts={3} />
 
       <RouterProvider router={router} />
       <ReactQueryDevtools initialIsOpen={false} position="left" />

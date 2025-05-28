@@ -20,7 +20,8 @@ export function Home() {
       onSuccess: () => {
         toast.success('CSV baixado com sucesso.')
       },
-      onError: () => {
+      onError: error => {
+        console.log(error)
         toast.error('Erro ao baixar CSV. Por favor, tente novamente.')
       },
     })
@@ -47,7 +48,7 @@ export function Home() {
           <h1 className="text-gray-600 text-lg mb-6">Novo link</h1>
           <CreateLinkForm />
         </div>
-        <div className="w-full bg-gray-100 p-8 rounded-lg max-h-[800px] overflow-y-auto">
+        <div className="w-full bg-gray-100 p-8 rounded-lg max-h-[850px] overflow-y-auto scrollbar scrollbar-thumb-blue-base">
           <div className="flex items-center justify-between">
             <h2 className="text-gray-600 text-lg mb-6">Meus links</h2>
             <Button

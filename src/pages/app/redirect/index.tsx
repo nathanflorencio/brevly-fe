@@ -3,39 +3,39 @@ import { useLocation, useParams, Link } from 'react-router'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { getOriginalLink } from '@/api/links/get-original-link'
 import { increaseAccessCount } from '@/api/links/increase-count-link'
+import { queryClient } from '@/lib/react-query'
 
 export function Redirect() {
   const { shortUrl } = useParams()
   const location = useLocation()
 
-  const {
-    data: link,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['original-link', shortUrl],
+  const { data: link, isLoading: isLoadingLink } = useQuery({
+    queryKey: ['link', shortUrl],
     queryFn: () => getOriginalLink(shortUrl!),
     enabled: !!shortUrl,
+    staleTime: Infinity,
   })
 
   const { mutateAsync: increaseAccessCountFn } = useMutation({
     mutationFn: (id: string) => increaseAccessCount(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['link', shortUrl] })
+      queryClient.invalidateQueries({ queryKey: ['links'] })
+      if (link?.originalUrl) {
+        window.location.href = link?.originalUrl
+      }
+    },
   })
 
   useEffect(() => {
-    if (link?.link.id && link?.link.originalUrl) {
-      increaseAccessCountFn(link.link.id)
-      window.location.href = link.link.originalUrl
+    if (link?.id && link?.originalUrl) {
+      increaseAccessCountFn(link.id)
     }
   }, [link, increaseAccessCountFn])
 
-  if (!shortUrl || isLoading) {
-    return null
-  }
-
   const renderNotFound = () => (
-    <main className="flex flex-col items-center justify-center h-screen w-screen">
-      <div className="bg-gray-100 flex flex-col items-center justify-center w-[580px] rounded-lg p-12">
+    <main className="flex flex-col items-center justify-center h-screen">
+      <div className="bg-gray-100 flex flex-col items-center justify-center max-w-[580px] rounded-lg p-12 mx-4">
         <img src="./404.svg" alt="404" />
         <h2 className="mt-6 text-xl text-gray-600">Link não encontrado</h2>
         <div className="mt-6 text-md text-gray-500 flex flex-col items-center justify-center max-w-[400px]">
@@ -53,8 +53,8 @@ export function Redirect() {
   )
 
   const renderRedirecting = () => (
-    <main className="flex flex-col items-center justify-center h-screen w-screen">
-      <div className="bg-gray-100 flex flex-col items-center justify-center w-[580px] rounded-lg p-12">
+    <main className="flex flex-col items-center justify-center h-screen">
+      <div className="bg-gray-100 flex flex-col items-center justify-center max-w-[580px] rounded-lg p-12 mx-4">
         <img src="./logo-icon.svg" alt="logo" />
         <h2 className="mt-6 text-xl text-gray-600">Redirecionando...</h2>
         <div className="mt-6 text-md text-gray-500 flex flex-col items-center justify-center max-w-[400px]">
@@ -70,7 +70,7 @@ export function Redirect() {
     </main>
   )
 
-  if (isError || !link?.link.originalUrl) {
+  if (!link?.id && !link?.originalUrl && !isLoadingLink) {
     return renderNotFound()
   }
 

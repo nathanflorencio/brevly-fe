@@ -38,7 +38,9 @@ export function CreateLinkForm() {
           error.response?.data.message ===
           'O link encurtado já existe. Por favor, escolha outro!'
         ) {
-          toast.error('Erro no cadastro. Essa URL encurtada já existe.')
+          toast.error('Erro no cadastro.', {
+            description: 'Essa URL encurtada já existe.',
+          })
           return
         }
       }

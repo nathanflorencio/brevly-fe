@@ -16,7 +16,8 @@ export function LinkCard({ link }: { link: ILink }) {
       toast.success('Link deletado com sucesso')
       queryClient.invalidateQueries({ queryKey: ['links'] })
     },
-    onError: () => {
+    onError: error => {
+      console.log(error)
       toast.error('Erro ao deletar link')
     },
   })
@@ -32,7 +33,9 @@ export function LinkCard({ link }: { link: ILink }) {
 
   function handleCopyLink() {
     navigator.clipboard.writeText(fullLink)
-    toast.success('Link copiado para a área de transferência')
+    toast.info('Link copiado com sucesso!', {
+      description: `O link ${link.shortUrl} foi copiado para a área de transferência.`,
+    })
   }
 
   return (
