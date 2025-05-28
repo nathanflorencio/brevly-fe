@@ -75,7 +75,7 @@ export function CreateLinkForm() {
       onSubmit={handleSubmit(handleCreateLink)}
     >
       <div className="flex flex-col w-full gap-4">
-        <div className="flex w-full flex-col-reverse gap-1.5">
+        <div className="group flex w-full flex-col-reverse gap-1.5">
           <div className="flex items-center gap-2">
             {errors.originalUrl?.message && (
               <>
@@ -101,7 +101,7 @@ export function CreateLinkForm() {
           </Label>
         </div>
 
-        <div className="flex w-full flex-col-reverse gap-1.5">
+        <div className="group flex w-full flex-col-reverse gap-1.5">
           <div className="flex items-center gap-2">
             {errors.shortUrl?.message && (
               <>
@@ -115,7 +115,7 @@ export function CreateLinkForm() {
           <Input
             type="text"
             id="shortUrl"
-            placeholder="brev.ly/"
+            prefix="brev.ly/"
             status={errors.shortUrl?.message ? 'error' : 'default'}
             {...register('shortUrl')}
           />

@@ -72,7 +72,7 @@ export function Home() {
               {links?.total === 0 && !isLoadingLinks && (
                 <div className="flex flex-col items-center justify-center gap-3 mt-4.5">
                   <Link className="size-8 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs uppercase text-gray-500">
                     Ainda não existem links cadastrados
                   </span>
                 </div>
