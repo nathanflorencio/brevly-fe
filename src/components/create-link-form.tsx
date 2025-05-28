@@ -1,10 +1,15 @@
-import { Input, Label } from '@/components/ui/input'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { createLink } from '@/api/links/create-link'
+import { Warning } from 'phosphor-react'
+import { toast } from 'sonner'
+import { queryClient } from '@/lib/react-query'
+import { AxiosError } from 'axios'
 
 const createLinkFormSchema = z.object({
   originalUrl: z.string().url('URL inválida'),
@@ -14,52 +19,123 @@ const createLinkFormSchema = z.object({
 type CreateLinkFormSchema = z.infer<typeof createLinkFormSchema>
 
 type CreateLinkParams = {
-  data: {
-    originalUrl: string
-    shortUrl: string
-  }
+  originalUrl: string
+  shortUrl: string
 }
 
 export function CreateLinkForm() {
-  /* const { mutateAsync: createLinkFn, isPending: isCreatingLink } = useMutation({
-    mutationFn: (data: CreateLinkParams) => {
-      createLink({ originalUrl: data.originalUrl, shortUrl: data.shortUrl })
+  const { mutateAsync: createLinkFn, isPending: isCreatingLink } = useMutation({
+    mutationFn: ({ originalUrl, shortUrl }: CreateLinkParams) =>
+      createLink({ originalUrl, shortUrl }),
+    onSuccess: () => {
+      toast.success('Link criado com sucesso')
+      queryClient.invalidateQueries({ queryKey: ['links'] })
     },
-  }) */
-
-  const form = useForm<CreateLinkFormSchema>({
-    resolver: zodResolver(createLinkFormSchema),
-    values: {
-      originalUrl: '',
-      shortUrl: 'brev.ly/',
+    onError: error => {
+      console.log(error)
+      if (error instanceof AxiosError) {
+        if (
+          error.response?.data.message ===
+          'O link encurtado já existe. Por favor, escolha outro!'
+        ) {
+          toast.error('Erro no cadastro. Essa URL encurtada já existe.')
+          return
+        }
+      }
+      toast.error('Erro ao criar link. Por favor, tente novamente.')
     },
   })
 
-  function handleSubmit(data: CreateLinkFormSchema) {
-    console.log(data)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateLinkFormSchema>({
+    resolver: zodResolver(createLinkFormSchema),
+    values: {
+      originalUrl: '',
+      shortUrl: '',
+    },
+  })
+
+  async function handleCreateLink(data: CreateLinkFormSchema) {
+    await createLinkFn({
+      originalUrl: data.originalUrl,
+      shortUrl: data.shortUrl,
+    })
+    reset()
   }
 
   return (
     <form
-      className="flex flex-col gap-4"
-      onSubmit={form.handleSubmit(handleSubmit)}
+      className="flex flex-col w-full"
+      onSubmit={handleSubmit(handleCreateLink)}
     >
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="originalUrl" title="Link original" />
-        <Input
-          autoFocus
-          id="originalUrl"
-          name="originalUrl"
-          type="text"
-          placeholder="www.exemplo.com.br"
-        />
+      <div className="flex flex-col w-full gap-4">
+        <div className="flex w-full flex-col-reverse gap-1.5">
+          <div className="flex items-center gap-2">
+            {errors.originalUrl?.message && (
+              <>
+                <Warning size={16} className="text-danger" />
+                <p className="text-sm text-gray-500">
+                  {errors.originalUrl?.message}
+                </p>
+              </>
+            )}
+          </div>
+          <Input
+            type="url"
+            id="originalUrl"
+            placeholder="www.exemplo.com.br"
+            status={errors.originalUrl?.message ? 'error' : 'default'}
+            {...register('originalUrl')}
+          />
+          <Label
+            id="originalUrl"
+            status={errors.originalUrl?.message ? 'error' : 'default'}
+          >
+            LINK ORIGINAL
+          </Label>
+        </div>
 
-        <Label htmlFor="shortUrl" title="Link encurtado" />
-        <Input id="shortUrl" name="shortUrl" type="text" />
+        <div className="flex w-full flex-col-reverse gap-1.5">
+          <div className="flex items-center gap-2">
+            {errors.shortUrl?.message && (
+              <>
+                <Warning size={16} className="text-danger" />
+                <p className="text-sm text-gray-500">
+                  {errors.shortUrl?.message}
+                </p>
+              </>
+            )}
+          </div>
+          <Input
+            type="text"
+            id="shortUrl"
+            placeholder="brev.ly/"
+            status={errors.shortUrl?.message ? 'error' : 'default'}
+            {...register('shortUrl')}
+          />
+          <Label
+            id="shortUrl"
+            status={errors.shortUrl?.message ? 'error' : 'default'}
+          >
+            LINK ENCURTADO
+          </Label>
+        </div>
       </div>
-      <Button type="submit" className="w-full mt-6" variant="primary" disabled>
-        <Button.Title>Salvar link</Button.Title>
-      </Button>
+
+      <div className="mt-6 w-full">
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={isSubmitting || isCreatingLink}
+          className="w-full"
+        >
+          <Button.Title>Salvar link</Button.Title>
+        </Button>
+      </div>
     </form>
   )
 }

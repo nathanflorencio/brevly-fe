@@ -23,10 +23,9 @@ function Button({
         className,
         'flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer',
         variant === 'primary' &&
-          'w-[316px] h-[48px] rounded-lg bg-blue-base text-white',
+          'w-full h-[48px] rounded-lg bg-blue-base text-white',
         variant === 'primary' && '[&:not(:disabled)]:hover:bg-blue-dark',
-        variant === 'secondary' &&
-          'w-[100px] h-[32px] rounded-sm bg-gray-200 text-gray-500',
+        variant === 'secondary' && 'rounded-sm bg-gray-200 text-gray-500',
         variant === 'secondary' &&
           '[&:not(:disabled)]:hover:border [&:not(:disabled)]:hover:border-blue-base'
       )}

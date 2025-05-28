@@ -1,37 +1,27 @@
-import { cn } from '@/lib/utils'
 import type { ComponentProps } from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
 
-type InputProps = ComponentProps<'input'> & {}
+const input = tv({
+  base: 'peer rounded-lg border p-4 font-normal placeholder:text-gray-400',
+  variants: {
+    status: {
+      default: 'focus:border-blue-base active:border-blue-base border-gray-300',
+      error: 'border-danger focus:border-danger active:border-danger',
+    },
+  },
+  defaultVariants: {
+    status: 'default',
+  },
+})
 
-type LabelProps = ComponentProps<'label'> & {
-  title: string
+export type InputProps = ComponentProps<'input'> &
+  VariantProps<typeof input> & {
+    status?: string
+    value?: string | number
+  }
+
+function Input({ className, status, ...props }: InputProps) {
+  return <input className={input({ status, className })} {...props} />
 }
 
-function Label({ className, htmlFor, title, ...props }: LabelProps) {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className={cn(
-        className,
-        'text-xs text-gray-500, active:text-blue-base invalid:text-danger'
-      )}
-      {...props}
-    >
-      {title}
-    </label>
-  )
-}
-
-function Input({ className, ...props }: InputProps) {
-  return (
-    <input
-      className={cn(
-        className,
-        'w-[352px] h-[48px] p-4 rounded-lg placeholder:text-gray-400 ring-1 ring-gray-300 active:ring-blue-base invalid:ring-danger'
-      )}
-      {...props}
-    />
-  )
-}
-
-export { Input, Label }
+export { Input }
